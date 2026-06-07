@@ -9,7 +9,7 @@ export function ProductCard({ product, onPress }) {
       <Image source={{ uri: product.thumbnail }} style={styles.image} />
       <View style={styles.body}>
         <Text numberOfLines={1} style={styles.title}>{product.title}</Text>
-        <Text numberOfLines={1} style={styles.category}>{product.category}</Text>
+        <Text numberOfLines={1} style={styles.category}>{product.categoryLabel || product.category}</Text>
         <View style={styles.row}>
           <Text style={styles.price}>US$ {Number(product.price).toFixed(2)}</Text>
           <Text style={styles.stock}>Estoque: {product.stock}</Text>

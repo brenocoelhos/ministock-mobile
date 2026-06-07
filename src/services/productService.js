@@ -1,4 +1,5 @@
 import api from "./api";
+import { presentCategory, presentProduct } from "./productPresenter";
 
 const PAGE_SIZE = 20;
 
@@ -26,7 +27,7 @@ export async function listProducts({ page = 0, search = "", category = "" } = {}
       : products;
 
     return {
-      products: filteredProducts,
+      products: filteredProducts.map(presentProduct),
       total: response.data.total || 0,
       skip: response.data.skip || 0,
       limit: response.data.limit || PAGE_SIZE
@@ -40,16 +41,7 @@ export async function listProducts({ page = 0, search = "", category = "" } = {}
 export async function listCategories() {
   try {
     const response = await api.get("/products/categories");
-    return (response.data || []).map((category) => {
-      if (typeof category === "string") {
-        return { slug: category, name: category };
-      }
-
-      return {
-        slug: category.slug,
-        name: category.name || category.slug
-      };
-    });
+    return (response.data || []).map(presentCategory);
   } catch (error) {
     throw error;
   } finally {
@@ -59,7 +51,7 @@ export async function listCategories() {
 export async function getProductById(id) {
   try {
     const response = await api.get(`/products/${id}`);
-    return response.data;
+    return presentProduct(response.data);
   } catch (error) {
     throw error;
   } finally {
@@ -69,7 +61,7 @@ export async function getProductById(id) {
 export async function createProduct(payload) {
   try {
     const response = await api.post("/products/add", payload);
-    return response.data;
+    return presentProduct(response.data);
   } catch (error) {
     throw error;
   } finally {
@@ -79,7 +71,7 @@ export async function createProduct(payload) {
 export async function updateProduct(id, payload) {
   try {
     const response = await api.put(`/products/${id}`, payload);
-    return response.data;
+    return presentProduct(response.data);
   } catch (error) {
     throw error;
   } finally {

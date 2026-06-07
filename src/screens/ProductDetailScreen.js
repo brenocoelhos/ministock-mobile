@@ -88,7 +88,7 @@ export function ProductDetailScreen({ navigation, route }) {
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: product.thumbnail }} style={styles.image} />
       <Text style={styles.title}>{product.title}</Text>
-      <Text style={styles.category}>{product.category}</Text>
+      <Text style={styles.category}>{product.categoryLabel || product.category}</Text>
 
       <View style={styles.metrics}>
         <Metric label="Preco" value={`US$ ${Number(product.price).toFixed(2)}`} />

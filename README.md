@@ -68,12 +68,3 @@ Adicione aqui as imagens depois de executar o app no celular ou emulador:
 ![Detalhes](docs/screenshots/detail.png)
 ```
 
-## Video demonstrativo
-
-Grave um video de ate 2 minutos mostrando:
-
-1. Login com as credenciais de teste.
-2. Listagem, busca, filtro por categoria, paginacao e pull to refresh.
-3. Detalhes de um produto.
-4. Cadastro, edicao e exclusao.
-5. Logout.

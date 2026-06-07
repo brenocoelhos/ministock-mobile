@@ -10,7 +10,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { listCategories, listProducts } from "../services/productService";
 import { colors } from "../theme/colors";
 
-export function ProductListScreen({ navigation }) {
+export function ProductListScreen({ navigation, route }) {
   const { signOut } = useAuth();
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
@@ -81,6 +81,17 @@ export function ProductListScreen({ navigation }) {
     loadProducts();
   }, [loadProducts]);
 
+  useEffect(() => {
+    const deletedProductId = route.params?.deletedProductId;
+
+    if (!deletedProductId) {
+      return;
+    }
+
+    setProducts((current) => current.filter((product) => product.id !== deletedProductId));
+    navigation.setParams({ deletedProductId: undefined });
+  }, [navigation, route.params?.deletedProductId]);
+
   function handleSearchSubmit() {
     setSubmittedSearch(search);
   }
@@ -105,22 +116,24 @@ export function ProductListScreen({ navigation }) {
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
-      <View style={styles.searchBox}>
-        <TextInput
-          autoCapitalize="none"
-          onChangeText={setSearch}
-          onSubmitEditing={handleSearchSubmit}
-          placeholder="Buscar produto"
-          returnKeyType="search"
-          style={styles.searchInput}
-          value={search}
-        />
-        <TouchableOpacity onPress={handleSearchSubmit} style={styles.searchButton}>
-          <Text style={styles.searchButtonText}>Buscar</Text>
-        </TouchableOpacity>
-      </View>
+      <View style={styles.controls}>
+        <View style={styles.searchBox}>
+          <TextInput
+            autoCapitalize="none"
+            onChangeText={setSearch}
+            onSubmitEditing={handleSearchSubmit}
+            placeholder="Buscar produto"
+            returnKeyType="search"
+            style={styles.searchInput}
+            value={search}
+          />
+          <TouchableOpacity onPress={handleSearchSubmit} style={styles.searchButton}>
+            <Text style={styles.searchButtonText}>Buscar</Text>
+          </TouchableOpacity>
+        </View>
 
-      <CategoryFilter categories={categories} selected={category} onSelect={handleCategorySelect} />
+        <CategoryFilter categories={categories} selected={category} onSelect={handleCategorySelect} />
+      </View>
 
       {loading ? (
         <View style={styles.center}>
@@ -131,6 +144,8 @@ export function ProductListScreen({ navigation }) {
       ) : (
         <FlatList
           data={products}
+          contentContainerStyle={styles.listContent}
+          style={styles.list}
           keyExtractor={(item) => String(item.id)}
           ListEmptyComponent={<EmptyState message="Ajuste a busca ou selecione outra categoria." />}
           ListFooterComponent={loadingMore ? <ActivityIndicator color={colors.primary} style={styles.footer} /> : null}
@@ -153,6 +168,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center"
   },
+  controls: {
+    backgroundColor: colors.background,
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    zIndex: 2
+  },
   footer: {
     paddingVertical: 18
   },
@@ -168,6 +189,13 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: colors.background,
     flex: 1
+  },
+  list: {
+    flex: 1
+  },
+  listContent: {
+    paddingBottom: 18,
+    paddingTop: 8
   },
   searchBox: {
     flexDirection: "row",

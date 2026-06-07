@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Button } from "../components/Button";
 import { ErrorState } from "../components/ErrorState";
@@ -39,6 +39,16 @@ export function ProductDetailScreen({ navigation, route }) {
   }, [navigation, product]);
 
   async function confirmDelete() {
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm("Deseja remover este produto do catalogo?");
+
+      if (confirmed) {
+        handleDelete();
+      }
+
+      return;
+    }
+
     Alert.alert("Remover produto", "Deseja remover este produto do catalogo?", [
       { text: "Cancelar", style: "cancel" },
       { text: "Remover", style: "destructive", onPress: handleDelete }
@@ -50,7 +60,11 @@ export function ProductDetailScreen({ navigation, route }) {
 
     try {
       await deleteProduct(productId);
-      navigation.goBack();
+      navigation.navigate({
+        name: "Products",
+        params: { deletedProductId: productId },
+        merge: true
+      });
     } catch (requestError) {
       Alert.alert("Erro", requestError.message);
     } finally {

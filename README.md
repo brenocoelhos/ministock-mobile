@@ -60,11 +60,7 @@ npm run lint:axios
 
 ## Capturas de tela
 
-Adicione aqui as imagens depois de executar o app no celular ou emulador:
+as imagens e videos diponivel no portal
 
-```markdown
-![Login](docs/screenshots/login.png)
-![Lista](docs/screenshots/products.png)
-![Detalhes](docs/screenshots/detail.png)
-```
+
 
